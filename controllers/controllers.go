@@ -95,6 +95,49 @@ func GetProducts(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(products)
 }
 
+func AddProducts(w http.ResponseWriter, r *http.Request) {
+	// TODO: Make sure cuman user yang bisa pake
+	requestBody, _ := ioutil.ReadAll(r.Body)
+	fmt.Println(requestBody)
+	var product entity.Product
+	json.Unmarshal(requestBody, &product)
+
+	// hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+	// user.Password = string(hashedPassword)
+
+	database.Connector.Create(&product)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(product)
+}
+
+func DeleteProduct(w http.ResponseWriter, r *http.Request) {
+	requestBody, _ := ioutil.ReadAll(r.Body)
+	// TODO: Bikin cara ngeread id productnya
+	fmt.Println(requestBody)
+
+	var product entity.Product
+	product.ID = 1
+	database.Connector.Delete(&product)
+
+	database.Connector.Create(&product)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(product)
+}
+
+func ChangeProduct(w http.ResponseWriter, r *http.Request) {
+	requestBody, _ := ioutil.ReadAll(r.Body)
+	// TODO: Bikin cara ngeread id productnya
+	fmt.Println(requestBody)
+
+	var product entity.Product
+	product.ID = 1
+	database.Connector.Delete(&product)
+}
+
 func SearchProducts(w http.ResponseWriter, r *http.Request) {
 	searchKeyword := r.URL.Query().Get("search")
 	fmt.Println(searchKeyword)

@@ -27,6 +27,8 @@ func initaliseHandlers(router *mux.Router) {
 	router.HandleFunc("/products", controllers.GetProducts).Methods("GET")
 	router.HandleFunc("/product/{id}", controllers.GetProductById).Methods("GET")
 	router.HandleFunc("/products/search", controllers.SearchProducts).Methods("GET")
+	router.HandleFunc("/products/addproducts", controllers.AddProducts).Methods("POST")
+	router.HandleFunc("/products/deleteproduct", controllers.DeleteProduct).Methods("POST")
 	// router.HandleFunc("/shoppingcart", controllers.GetShoppingCart).Methods("GET")
 }
 
