@@ -1,17 +1,17 @@
 package controllers
 
 import (
-	"agree-market/database"
-	"agree-market/entity"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"minio/database"
+	"minio/entity"
 	"net/http"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/mux"
-	"github.com/ulule/deepcopier"
+	_ "github.com/ulule/deepcopier"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -125,41 +125,41 @@ func GetProductById(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(product)
 }
 
-func GetShoppingCart(w http.ResponseWriter, r *http.Request) {
-	requestBody, _ := ioutil.ReadAll(r.Body)
-	var user entity.User
-	json.Unmarshal(requestBody, &user)
-	if len(user.Email) == 0 {
-		w.WriteHeader(http.StatusUnauthorized)
-		return
-	}
-	fmt.Println(user)
-	var fetchedUser entity.User
-	database.Connector.Where("email = ?", user.Email).First(&fetchedUser)
-	// database.Connector.Find(&fetchedUser)
-	fmt.Println(fetchedUser)
-	if fetchedUser.ID == 0 {
-		w.WriteHeader(http.StatusUnauthorized)
-		return
-	}
-	fmt.Println(fetchedUser.Password)
-	fmt.Println(user.Password)
-	err := bcrypt.CompareHashAndPassword([]byte(fetchedUser.Password), []byte(user.Password))
-	fmt.Println(err)
-	if err != nil {
-		w.WriteHeader(http.StatusUnauthorized)
-		return
-	}
-	// Sudah otentikasi
-	var userShoppingCart entity.Shopping_Cart
-	var product entity.Product
-	database.Connector.Where("user_id = ?", fetchedUser.ID).First(&userShoppingCart)
-	database.Connector.Where("id = ?", userShoppingCart.ProductID).First(&product)
-	deepcopier.Copy(&fetchedUser).To(&userShoppingCart.User)
-	deepcopier.Copy(&product).To(&userShoppingCart.Product)
-	fmt.Println(product)
+// func GetShoppingCart(w http.ResponseWriter, r *http.Request) {
+// 	requestBody, _ := ioutil.ReadAll(r.Body)
+// 	var user entity.User
+// 	json.Unmarshal(requestBody, &user)
+// 	if len(user.Email) == 0 {
+// 		w.WriteHeader(http.StatusUnauthorized)
+// 		return
+// 	}
+// 	fmt.Println(user)
+// 	var fetchedUser entity.User
+// 	database.Connector.Where("email = ?", user.Email).First(&fetchedUser)
+// 	// database.Connector.Find(&fetchedUser)
+// 	fmt.Println(fetchedUser)
+// 	if fetchedUser.ID == 0 {
+// 		w.WriteHeader(http.StatusUnauthorized)
+// 		return
+// 	}
+// 	fmt.Println(fetchedUser.Password)
+// 	fmt.Println(user.Password)
+// 	err := bcrypt.CompareHashAndPassword([]byte(fetchedUser.Password), []byte(user.Password))
+// 	fmt.Println(err)
+// 	if err != nil {
+// 		w.WriteHeader(http.StatusUnauthorized)
+// 		return
+// 	}
+// 	// Sudah otentikasi
+// var userShoppingCart entity.Shopping_Cart
+// 	var product entity.Product
+// 	database.Connector.Where("user_id = ?", fetchedUser.ID).First(&userShoppingCart)
+// 	database.Connector.Where("id = ?", userShoppingCart.ProductID).First(&product)
+// 	deepcopier.Copy(&fetchedUser).To(&userShoppingCart.User)
+// 	deepcopier.Copy(&product).To(&userShoppingCart.Product)
+// 	fmt.Println(product)
 
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(userShoppingCart)
-}
+// 	w.Header().Set("Content-Type", "application/json")
+// 	w.WriteHeader(http.StatusOK)
+// 	json.NewEncoder(w).Encode(userShoppingCart)
+// }

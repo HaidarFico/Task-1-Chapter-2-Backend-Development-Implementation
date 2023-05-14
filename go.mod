@@ -1,4 +1,4 @@
-module agree-market
+module minio
 
 go 1.14
 
